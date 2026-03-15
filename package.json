@@ -1,12 +1,32 @@
 {
   "name": "github-sdk",
   "version": "1.0.0",
-  "description": "An SDK for interacting with the GitHub API",
-  "main": "dist/index.js",
-  "keywords": [
-    "SDK",
-    "GitHub"
+  "description": "A lightweight JS/TS SDK for interacting with the GitHub API",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "dist",
+    "src"
   ],
-  "author": "LewieJ08",
-  "license": "ISC"
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "bun run build",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "github",
+    "github-api",
+    "sdk",
+    "typescript",
+    "api-client"
+  ],
+  "author": "lewiej08",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
 }
