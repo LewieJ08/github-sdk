@@ -1,11 +1,15 @@
 import { request } from "../utils/request.utils";
 
+interface GithubClientConfig {
+    token: string
+}
+
 export class GithubClient {
     private readonly token: string;
     public readonly baseUrl: string;
 
-    constructor(token: string) {
-        this.token = token;
+    constructor(config: GithubClientConfig) {
+        this.token = config.token;
         this.baseUrl = 'https://api.github.com'
     }
 
