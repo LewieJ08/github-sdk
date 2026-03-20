@@ -5,7 +5,7 @@ interface GithubApiErrorResponse {
 }
 
 export async function request<T>(
-    baseUrl: string,
+    baseUrl: string, 
     path: string,
     options: RequestInit = {}, 
     token: string
