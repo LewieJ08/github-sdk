@@ -65,3 +65,7 @@ export function mapPullRequest(dto: PullRequestDTO): PullRequest {
         base: mapBranchRef(dto.base)
     }   
 }
+
+export function mapPullRequests(dtos: PullRequestDTO[]): PullRequest[] {
+    return dtos.map((dto) => mapPullRequest(dto))
+}
