@@ -1,6 +1,14 @@
 import { UserDTO, User } from "./user.types";
 
-export type State = 'open' | 'closed';
+export type PullRequestState = 'open' | 'closed';
+export type PullRequestFileStatus =
+  | "added"
+  | "removed"
+  | "modified"
+  | "renamed"
+  | "copied"
+  | "changed"
+  | "unchanged";
 
 export interface BranchRefDTO {
     ref : string;
@@ -11,7 +19,7 @@ export interface PullRequestDTO {
     id: number;
     node_id: string;
     number: number;
-    state: State;
+    state: PullRequestState;
     locked: boolean;
     draft: boolean;
     title: string;
@@ -38,6 +46,19 @@ export interface BranchRef {
     sha: string;
 }
 
+export interface PullRequestFileDTO {
+  sha: string;
+  filename: string;
+  status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+  additions: number;
+  deletions: number;
+  changes: number;
+  blob_url: string;
+  raw_url: string;
+  contents_url: string;
+  patch: string | null;
+}
+
 export interface PullRequest {
     id: number;
     nodeId: string;
@@ -62,4 +83,16 @@ export interface PullRequest {
     isMerged: boolean;
     head: BranchRef;
     base: BranchRef;
+}
+
+export interface PullRequestFile {
+  sha: string;
+  name: string;
+  status: PullRequestFileStatus;
+  additions: number;
+  deletions: number;
+  changes: number;
+  blobUrl: string;
+  rawUrl: string;
+  patch: string | null;
 }
