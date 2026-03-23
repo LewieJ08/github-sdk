@@ -2,7 +2,9 @@ import {
     PullRequest, 
     PullRequestDTO, 
     BranchRef, 
-    BranchRefDTO
+    BranchRefDTO,
+    PullRequestFileDTO,
+    PullRequestFile
 } from "../types/pullrequest.types"
 import { mapUser } from "./user.mapper"
 
@@ -43,4 +45,22 @@ export function mapPullRequest(dto: PullRequestDTO): PullRequest {
 
 export function mapPullRequests(dtos: PullRequestDTO[]): PullRequest[] {
     return dtos.map(dto => mapPullRequest(dto))
+}
+
+export function mapPullRequestFile(dto: PullRequestFileDTO): PullRequestFile{
+    return {
+        sha: dto.sha,
+        name: dto.filename,
+        status: dto.status,
+        additions: dto.additions,
+        deletions: dto.deletions,
+        changes: dto.changes,
+        blobUrl: dto.blob_url,
+        rawUrl: dto.raw_url,
+        patch: dto.patch
+    }
+}
+
+export function mapPullRequestFiles(dtos: PullRequestFileDTO[]): PullRequestFile[] {
+    return dtos.map(dto => mapPullRequestFile(dto))
 }
