@@ -49,7 +49,7 @@ export interface BranchRef {
 export interface PullRequestFileDTO {
   sha: string;
   filename: string;
-  status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+  status: PullRequestFileStatus;
   additions: number;
   deletions: number;
   changes: number;
@@ -63,7 +63,7 @@ export interface PullRequest {
     id: number;
     nodeId: string;
     number: number;
-    state: State;
+    state: PullRequestState;
     isLocked: boolean;
     isDraft: boolean;
     title: string;
