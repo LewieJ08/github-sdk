@@ -1,8 +1,9 @@
 import { GithubClient } from "../client/GithubClient";
 import { MissingConfigError } from "../errors/errors";
 import { Commit, CommitDTO } from "../types/commit.types";
-import { PullRequest, PullRequestDTO, State } from "../types/pullrequest.types";
-import { mapCommit, mapCommits, mapPullRequest, mapPullRequests } from "../utils/mapper.utils";
+import { PullRequest, PullRequestDTO, PullRequestFile, PullRequestFileDTO, PullRequestState } from "../types/pullrequest.types";
+import { mapPullRequest, mapPullRequestFiles, mapPullRequests } from "../mappers/pullrequest.mapper";
+import { mapCommits } from "../mappers/commit.mapper";
 
 export class PullRequestService {
     private readonly path: string;
@@ -54,7 +55,7 @@ export class PullRequestService {
         pullNumber: number,
         title?: string,
         body?: string,
-        state?: State,
+        state?: PullRequestState,
         base?: string,
         maintainerCanModify?: boolean
     ) {
@@ -72,6 +73,11 @@ export class PullRequestService {
     
     public async listCommits(pullNumber: number): Promise<Commit[]> {
         const data = await this.client.request<CommitDTO[]>(`${this.path}/${pullNumber}/commits`);
-        return mapCommits(data)
+        return mapCommits(data);
     }
-}
+
+    public async listFiles(pullNumber: number): Promise<PullRequestFile[]> {
+        const data = await this.client.request<PullRequestFileDTO[]>(`${this.path}/${pullNumber}/files`);
+        return mapPullRequestFiles(data)
+    }
+ }
