@@ -1,8 +1,18 @@
 import { GithubClient } from "../client/GithubClient";
 import { MissingConfigError } from "../errors/errors";
 import { Commit, CommitDTO } from "../types/commit.types";
-import { PullRequest, PullRequestDTO, PullRequestFile, PullRequestFileDTO, PullRequestState } from "../types/pullrequest.types";
-import { mapPullRequest, mapPullRequestFiles, mapPullRequests } from "../mappers/pullrequest.mapper";
+import {
+    PullRequest,
+    PullRequestDTO, 
+    PullRequestFile, 
+    PullRequestFileDTO, 
+    PullRequestState 
+} from "../types/pullrequest.types";
+import { 
+    mapPullRequest, 
+    mapPullRequestFiles, 
+    mapPullRequests 
+} from "../mappers/pullrequest.mapper";
 import { mapCommits } from "../mappers/commit.mapper";
 
 export class PullRequestService {
@@ -17,8 +27,8 @@ export class PullRequestService {
     }
 
     public async list(): Promise<PullRequest[]> {
-        const data = await this.client.request<PullRequestDTO[]>(this.path);
-        return mapPullRequests(data)
+        const response = await this.client.request<PullRequestDTO[]>(this.path);
+        return mapPullRequests(response.data)
     }
 
     public create(
@@ -47,8 +57,8 @@ export class PullRequestService {
     }
 
     public async get(pullNumber: number): Promise<PullRequest> {
-        const data = await this.client.request<PullRequestDTO>(`${this.path}/${pullNumber}`);
-        return mapPullRequest(data);
+        const response = await this.client.request<PullRequestDTO>(`${this.path}/${pullNumber}`);
+        return mapPullRequest(response.data);
     }
 
     public update(
@@ -72,12 +82,16 @@ export class PullRequestService {
     } 
     
     public async listCommits(pullNumber: number): Promise<Commit[]> {
-        const data = await this.client.request<CommitDTO[]>(`${this.path}/${pullNumber}/commits`);
-        return mapCommits(data);
+        const response = await this.client.request<CommitDTO[]>(`${this.path}/${pullNumber}/commits`);
+        return mapCommits(response.data);
     }
 
     public async listFiles(pullNumber: number): Promise<PullRequestFile[]> {
-        const data = await this.client.request<PullRequestFileDTO[]>(`${this.path}/${pullNumber}/files`);
-        return mapPullRequestFiles(data)
+        const response = await this.client.request<PullRequestFileDTO[]>(`${this.path}/${pullNumber}/files`);
+        return mapPullRequestFiles(response.data)
+    }
+ 
+    public checkMergeStatus(pullNumber: number) {
+        this.client.request(`${this.path}/${pullNumber}/merge`)
     }
  }

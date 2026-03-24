@@ -4,12 +4,17 @@ interface GithubApiErrorResponse {
     message: string
 }
 
+export interface ApiResponse<T>{
+    data: T,
+    status: number
+}
+
 export async function request<T>(
     baseUrl: string, 
     path: string,
     options: RequestInit = {}, 
     token: string
-): Promise<T> {
+): Promise<ApiResponse<T>> {
     const response = await fetch(`${baseUrl}${path}`, {
         ...options,
         headers: {
@@ -27,6 +32,8 @@ export async function request<T>(
         throw new GithubApiError(response.status, error.message)
     }
 
-    return data as T
-   
+    return {
+        data: data as T,
+        status: response.status
+    }
 }
