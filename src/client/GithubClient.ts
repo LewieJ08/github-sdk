@@ -1,5 +1,5 @@
 import { PullRequestService } from "../services/pullrequest.service";
-import { request } from "../utils/request.utils";
+import { ApiResponse, request } from "../utils/request.utils";
 
 interface GithubClientConfig {
     token: string,
@@ -16,7 +16,7 @@ export class GithubClient {
         this.baseUrl = 'https://api.github.com';
     }
 
-    public request<T>(path: string, options?: RequestInit): Promise<T> {
+    public request<T>(path: string, options?: RequestInit): Promise<ApiResponse<T>> {
         return request<T>(this.baseUrl, path, options, this.config.token)
     }
 }
