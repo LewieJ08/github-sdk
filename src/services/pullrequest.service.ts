@@ -6,7 +6,8 @@ import {
     PullRequestDTO, 
     PullRequestFile, 
     PullRequestFileDTO, 
-    PullRequestState 
+    PullRequestState,
+    PullRequestMergeMethod
 } from "../types/pullrequest.types";
 import { 
     mapPullRequest, 
@@ -100,4 +101,22 @@ export class PullRequestService {
 
         return false
     }
- }
+
+    public merge(
+        pullNumber: number,
+        commitTitle?: string,
+        commitMessage?: string,
+        sha?: string,
+        mergeMethod?: PullRequestMergeMethod
+    ) {
+        return this.client.request(`${this.path}/${pullNumber}/merge`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                commit_title: commitTitle,
+                commit_message: commitMessage,
+                sha: sha,
+                merge_method: mergeMethod
+            })
+        });
+    }
+}
