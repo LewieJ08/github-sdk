@@ -9,6 +9,7 @@ export type PullRequestFileStatus =
   | "copied"
   | "changed"
   | "unchanged";
+export type PullRequestMergeMethod = 'merge' | 'squash' | 'rebase'
 
 export interface BranchRefDTO {
     ref : string;
