@@ -3,7 +3,7 @@ import { RepositoryService } from "../services/repository.service";
 import { UserService } from "../services/user.service";
 import { ApiResponse, request } from "../utils/request.utils";
 
-interface GithubClientConfig {
+export interface GithubClientConfig {
     token: string,
     owner?: string, 
     repo?: string,
