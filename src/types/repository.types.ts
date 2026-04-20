@@ -51,3 +51,68 @@ export interface Repository {
     topics?: string[];
     visibility: RepositoryVisibility;
 }
+
+export interface CreateRepositoryParams {
+    name: string;
+    description?: string;
+    homepage?: string;
+    privateRepo: boolean;
+    visibility?: 'public' | 'private';
+    hasIssues?: boolean;
+    hasProjects?: boolean;
+    hasWiki?: boolean;
+    hasDownloads?: boolean;
+    isTemplate?: boolean;
+    teamId?: number;
+    autoInit?: boolean;
+    gitignoreTemplate?: string;
+    licenseTemplate?: string;
+    allowSquashMerge?: boolean;
+    allowMergeCommit?: boolean;
+    allowRebaseMerge?: boolean;
+    allowAutoMerge?: boolean;
+    deleteBranchOnMerge?: boolean;
+    squashMergeCommitTitle?: 'PR_TITLE' | 'COMMIT_OR_PR_TITLE';
+    squashMergeCommitMessage?: 'PR_BODY' | 'COMMIT_MESSAGES' | 'BLANK';
+    mergeCommitTitle?: 'PR_TITLE' | 'COMMIT_OR_PR_TITLE';
+    mergeCommitMessage?: 'PR_BODY' | 'COMMIT_MESSAGES' | 'BLANK';
+}
+
+export interface CreateRepositoryPayload {
+    name: string;
+    description?: string;
+    homepage?: string;
+    private: boolean;
+    visibility?: 'public' | 'private';
+    has_issues?: boolean;
+    has_projects?: boolean;
+    has_wiki?: boolean;
+    has_downloads?: boolean;
+    is_template?: boolean;
+    team_id?: number;
+    auto_init?: boolean;
+    gitignore_template?: string;
+    license_template?: string;
+    allow_squash_merge?: boolean;
+    allow_merge_commit?: boolean;
+    allow_rebase_merge?: boolean;
+    allow_auto_merge?: boolean;
+    delete_branch_on_merge?: boolean;
+    squash_merge_commit_title?: 'PR_TITLE' | 'COMMIT_OR_PR_TITLE';
+    squash_merge_commit_message?: 'PR_BODY' | 'COMMIT_MESSAGES' | 'BLANK';
+    merge_commit_title?: 'PR_TITLE' | 'COMMIT_OR_PR_TITLE';
+    merge_commit_message?: 'PR_BODY' | 'COMMIT_MESSAGES' | 'BLANK';
+}
+
+export interface UpdateRepositoryParams extends Omit<CreateRepositoryParams, 'teamId'> {
+    pullNumber: number;
+    defaultBranch?: string;
+    archived?: boolean;
+    allowForking?: boolean;
+}
+
+export interface UpdateRepositoryPayload extends Omit<CreateRepositoryPayload, 'team_id'> {
+    default_branch?: string;
+    archived?: boolean;
+    allow_forking?: boolean;
+}
