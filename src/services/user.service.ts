@@ -1,17 +1,6 @@
 import { GithubClient } from "../client/GithubClient";
-import { User, UserDTO } from "../types/user.types";
-import { mapUser, mapUsers } from "../mappers/user.mapper";
-
-interface UpdateUserParams {
-    name?: string;
-    email?: string;
-    blog?: string;
-    twitterUsername?: string | null;
-    company?: string;
-    location?: string;
-    hireable?: boolean;
-    bio?: string;
-}
+import { User, UserDTO, UpdateUserParams } from "../types/user.types";
+import { mapUpdateUserParams, mapUser, mapUsers } from "../mappers/user.mapper";
 
 export class UserService {
     private readonly path: string;
@@ -39,15 +28,8 @@ export class UserService {
 
     /**
      * Update the authenticated user via token
-     * @param params Update user params object
-     * @param params.name The new name of the user
-     * @param params.email The publicly visable email address of the user
-     * @param params.blog The new blog URL of the user
-     * @param params.twitterUsername The new Twitter username of the user 
-     * @param params.company The new company of the user
-     * @param params.location The new location of the user 
-     * @param params.hireable The new hiring availability of the user 
-     * @param params.bio The new short biography of the user 
+     * 
+     * @param params Configuration for the user to update
      * 
      * @example 
      * ```ts 
@@ -60,28 +42,10 @@ export class UserService {
      * ```
      */
     public updateAuthenticated(params: UpdateUserParams) {
-        const {
-            name,
-            email,
-            blog,
-            twitterUsername,
-            company,
-            location,
-            hireable,
-            bio
-        } = params
+        const body = mapUpdateUserParams(params);
         return this.client.request(this.path, {
             method: 'PATCH',
-            body: JSON.stringify({
-                name: name,
-                email: email,
-                blog: blog,
-                twitter_username: twitterUsername,
-                company: company,
-                location: location,
-                hireable: hireable,
-                bio: bio
-            })
+            body: JSON.stringify(body)
         })
     }
 

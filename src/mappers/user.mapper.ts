@@ -1,4 +1,4 @@
-import { User, UserDTO } from "../types/user.types"
+import { UpdateUserParams, UpdateUserPayload, User, UserDTO } from "../types/user.types"
 
 export function mapUser(dto: UserDTO): User {
     return {
@@ -27,4 +27,17 @@ export function mapUser(dto: UserDTO): User {
 
 export function mapUsers(dtos: UserDTO[]): User[] {
     return dtos.map(dto => mapUser(dto));
+}
+
+export function mapUpdateUserParams(params: UpdateUserParams): UpdateUserPayload {
+    return {
+        name: params.name,
+        email: params.email,
+        blog: params.blog,
+        twitter_username: params.twitterUsername,
+        company: params.company,
+        location: params.location,
+        hireable: params.hireable,
+        bio: params.bio
+    }
 }
