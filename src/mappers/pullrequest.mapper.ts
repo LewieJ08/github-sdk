@@ -4,7 +4,13 @@ import {
     BranchRef, 
     BranchRefDTO,
     PullRequestFileDTO,
-    PullRequestFile
+    PullRequestFile,
+    CreatePullRequestParams,
+    CreatePullRequestPayload,
+    UpdatePullRequestParams,
+    UpdatePullRequestPayload,
+    MergePullRequestParams,
+    MergePullRequestPayload
 } from "../types/pullrequest.types"
 import { mapUser } from "./user.mapper"
 
@@ -63,4 +69,36 @@ export function mapPullRequestFile(dto: PullRequestFileDTO): PullRequestFile{
 
 export function mapPullRequestFiles(dtos: PullRequestFileDTO[]): PullRequestFile[] {
     return dtos.map(dto => mapPullRequestFile(dto))
+}
+
+export function mapCreatePullRequestParams(params: CreatePullRequestParams): CreatePullRequestPayload {
+    return {
+        head: params.head,
+        base: params.base,
+        title: params.title,
+        head_repo: params.headRepo,
+        body: params.body,
+        maintainer_can_modify: params.maintainerCanModify,
+        draft: params.draft,
+        issue: params.issue
+    }
+}
+
+export function mapUpdatePullRequestParams(params: UpdatePullRequestParams): UpdatePullRequestPayload {
+    return {
+        title: params.title,
+        body: params.body,
+        state: params.state,
+        base: params.base,
+        maintainer_can_modify: params.maintainerCanModify,
+    };
+}
+
+export function mapMergePullRequestParams(params: MergePullRequestParams): MergePullRequestPayload {
+    return {
+        commit_title: params.commitTitle,
+        commit_message: params.commitMessage,
+        sha: params.sha,
+        merge_method: params.mergeMethod,
+    };
 }

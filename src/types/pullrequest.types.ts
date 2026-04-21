@@ -97,3 +97,57 @@ export interface PullRequestFile {
     rawUrl: string;
     patch: string | null;
 }
+
+export interface CreatePullRequestParams {
+    head: string;
+    base: string;
+    title?: string;
+    headRepo?: string;
+    body?: string;
+    maintainerCanModify?: boolean;
+    draft?: boolean;
+    issue?: number;
+}
+
+export interface CreatePullRequestPayload {
+    head: string;
+    base: string;
+    title?: string;
+    head_repo?: string;
+    body?: string;
+    maintainer_can_modify?: boolean;
+    draft?: boolean;
+    issue?: number;
+}
+
+export interface UpdatePullRequestParams {
+    pullNumber: number,
+    title?: string,
+    body?: string,
+    state?: PullRequestState,
+    base?: string,
+    maintainerCanModify?: boolean
+}
+
+export interface UpdatePullRequestPayload {
+    title?: string;
+    body?: string;
+    state?: PullRequestState;
+    base?: string;
+    maintainer_can_modify?: boolean;
+}
+
+export interface MergePullRequestParams {
+    pullNumber: number;
+    commitTitle?: string;
+    commitMessage?: string;
+    sha?: string;
+    mergeMethod?: PullRequestMergeMethod;
+}
+
+export interface MergePullRequestPayload {
+    commit_title?: string;
+    commit_message?: string;
+    sha?: string;
+    merge_method?: PullRequestMergeMethod;
+}
