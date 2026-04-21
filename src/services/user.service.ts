@@ -24,6 +24,7 @@ export class UserService {
 
     /**
      * Get the authenticated user via token
+     * 
      * @returns Data of the user
      * 
      * @example 
@@ -86,6 +87,7 @@ export class UserService {
 
     /**
      * Get a user by their ID
+     * 
      * @param accountId ID of the user's GitHub account
      * @returns Data of the user
      * 
@@ -101,6 +103,7 @@ export class UserService {
 
     /**
      * List all users
+     * 
      * @returns Array of users
      * 
      * @example
@@ -115,6 +118,7 @@ export class UserService {
 
     /**
      * Get a user by their username
+     * 
      * @param username The handle for the GitHub user account
      * @returns Data of the user
      * 

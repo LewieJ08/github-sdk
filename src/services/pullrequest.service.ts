@@ -1,62 +1,36 @@
 import { GithubClient } from "../client/GithubClient";
-import { MissingConfigError } from "../errors/errors";
 import { Commit, CommitDTO } from "../types/commit.types";
 import {
+    CreatePullRequestParams,
+    MergePullRequestParams,
     PullRequest,
     PullRequestDTO, 
     PullRequestFile, 
-    PullRequestFileDTO, 
-    PullRequestState,
-    PullRequestMergeMethod
+    PullRequestFileDTO,
+    UpdatePullRequestParams,
 } from "../types/pullrequest.types";
 import { 
+    mapCreatePullRequestParams,
+    mapMergePullRequestParams,
     mapPullRequest, 
     mapPullRequestFiles, 
-    mapPullRequests 
+    mapPullRequests, 
+    mapUpdatePullRequestParams
 } from "../mappers/pullrequest.mapper";
 import { mapCommits } from "../mappers/commit.mapper";
-
-interface CreatePullRequestParams {
-    head: string;
-    base: string;
-    title?: string;
-    headRepo?: string;
-    body?: string;
-    maintainerCanModify?: boolean;
-    draft?: boolean;
-    issue?: number;
-}
-
-interface UpdatePullRequestParams {
-    pullNumber: number,
-    title?: string,
-    body?: string,
-    state?: PullRequestState,
-    base?: string,
-    maintainerCanModify?: boolean
-}
-
-interface MergePullRequestParams {
-    pullNumber: number,
-    commitTitle?: string,
-    commitMessage?: string,
-    sha?: string,
-    mergeMethod?: PullRequestMergeMethod    
-}
+import { assertConfig } from "../utils/config.utils";
 
 export class PullRequestService {
     private readonly path: string;
 
     constructor(private readonly client: GithubClient) {
-        if (!client.config.owner || !client.config.repo) {
-            throw new MissingConfigError(['owner: string', 'repo: string']) 
-        }
-
+        assertConfig(this.client, ['owner', 'repo']);
         this.path = `/repos/${this.client.config.owner}/${this.client.config.repo}/pulls`;
     }
 
     /**
-     * List pull requests of a repository 
+     * List pull requests of a repository
+     *  
      * @returns Array of pull requests 
      * 
      * @example
@@ -71,16 +45,9 @@ export class PullRequestService {
 
     /**
      * Create a pull request
-     * @param params Create pull request params object
-     * @param params.title The title of the new pull request. Required unless issue is specified
-     * @param params.head The name of the branch where your changes are implemented
-     * @param params.headRepo The name of the repository where the changes in the pull request were made 
-     * @param params.base The name of the branch you want the changes pulled into
-     * @param params.body The contents of the pull request
-     * @param params.maintainerCanModify Indicates whether maintainers can modify the pull request
-     * @param params.draft Indicates whether the pull request is a draft
-     * @param params.issue An issue in the repository to convet to a pull request
      * 
+     * @param params Configuration for the pull request
+     *       
      * @example 
      * ```ts
      * await github.pullRequests.create({
@@ -92,33 +59,16 @@ export class PullRequestService {
      * ```
      */
     public create(params: CreatePullRequestParams) {
-        const {
-            title,
-            head,
-            base,
-            headRepo,
-            body,
-            maintainerCanModify,
-            draft,
-            issue
-        } = params;
+        const body = mapCreatePullRequestParams(params);
         return this.client.request(this.path, {
             method: 'POST',
-            body: JSON.stringify({
-                title: title,
-                head: head,
-                head_repo: headRepo,
-                base: base,
-                body: body,
-                maintainer_can_modify: maintainerCanModify,
-                draft: draft,
-                issue: issue
-            })
+            body: JSON.stringify(body)
         })
     }
 
     /**
      * List details of a pull request by providing its number
+     * 
      * @param pullNumber The number that identifies the pull request
      * @returns Data of a pull request
      * 
@@ -134,13 +84,8 @@ export class PullRequestService {
 
     /**
      * Update a pull request 
-     * @param params Update pull request params object
-     * @param params.pullNumber The number that identifies the pull request
-     * @param params.title The title of the pull request
-     * @param params.body The contents of the pull request
-     * @param params.state State of this pull request. Either 'open' or 'closed'
-     * @param params.base The name of the branch you want your changes pulled into
-     * @param params.maintainerCanModify Indicates whether maintainers can modify the pull request
+     * 
+     * @param params Configuration for the pull request to update
      * 
      * @example
      * ```ts
@@ -154,28 +99,16 @@ export class PullRequestService {
      * ```
      */
     public update(params: UpdatePullRequestParams) {
-        const {
-            pullNumber,
-            title,
-            body,
-            state,
-            base,
-            maintainerCanModify
-        } = params
-        return this.client.request(`${this.path}/${pullNumber}`, {
+        const body = mapUpdatePullRequestParams(params)
+        return this.client.request(`${this.path}/${params.pullNumber}`, {
             method: 'PATCH',
-            body: JSON.stringify({
-                title: title,
-                body: body,
-                state: state,
-                base: base,
-                maintainer_can_modify: maintainerCanModify
-            })
+            body: JSON.stringify(body)
         });
     } 
     
     /**
      * List commits on a pull request
+     * 
      * @param pullNumber The number that identifies the pull request
      * @returns Array of commits 
      * 
@@ -191,6 +124,7 @@ export class PullRequestService {
 
     /**
      * List the files in a specified pull request
+     * 
      * @param pullNumber The number that identifies the pull request
      * @returns Array of pull request files 
      * 
@@ -206,6 +140,7 @@ export class PullRequestService {
  
     /**
      * Check if a pull request has been merged
+     * 
      * @param pullNumber The number that identifies the pull request
      * @returns boolean value that determines if the pull request is merged
      * 
@@ -226,12 +161,8 @@ export class PullRequestService {
 
     /**
      * Merge a pull request into the base branch
-     * @param params Merge pull request params object 
-     * @param params.pullNumber The number that identifies the pull requests
-     * @param params.commitTitle Title for the automatic commit message 
-     * @param params.commitMessage Extra Detail to append the automatic commit message
-     * @param params.sha SHA that pull request head must match to allow merge
-     * @param params.mergeMethod The merge method to use. 'merge', 'squash' or 'rebase'
+     * 
+     * @param params Configuration for the pull request to merge
      * 
      * @example
      * ```ts 
@@ -243,28 +174,19 @@ export class PullRequestService {
      * ```
      */
     public merge(params: MergePullRequestParams) {
-        const {
-            pullNumber,
-            commitTitle,
-            commitMessage,
-            sha,
-            mergeMethod
-        } = params
-        return this.client.request(`${this.path}/${pullNumber}/merge`, {
+        const body = mapMergePullRequestParams(params);
+        return this.client.request(`${this.path}/${params.pullNumber}/merge`, {
             method: 'PUT',
-            body: JSON.stringify({
-                commit_title: commitTitle,
-                commit_message: commitMessage,
-                sha: sha,
-                merge_method: mergeMethod
-            })
+            body: JSON.stringify(body)
         });
     }
 
     /**
      * Updates the pull request with the latest upstream changes 
+     * 
      * @param pullNumber The number that identifies the pull request
-     * @param expectedHeadSha The expected SHA of the pull requests HEAD ref. This is the most recent commit of the pull request's branch
+     * @param expectedHeadSha The expected SHA of the pull requests HEAD ref. 
+     * This is the most recent commit of the pull request's branch
      *  
      * @example 
      * ```ts  
