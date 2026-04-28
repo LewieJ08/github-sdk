@@ -1,5 +1,5 @@
 import { GithubClient } from "../client/GithubClient";
-import { mapCreateRepositoryParams, mapRepository, mapUpdateRepositoryParams } from "../mappers/repository.mapper";
+import { mapCreateRepositoryParams, mapRepositories, mapRepository, mapUpdateRepositoryParams } from "../mappers/repository.mapper";
 import { 
     Repository, 
     RepositoryDTO,
@@ -13,41 +13,41 @@ export class RepositoryService {
     private readonly orgPath: string;
 
     constructor(private readonly client: GithubClient) { 
-        this.path = `repos/${client.config.owner}/${client.config.repo}`;
+        this.path = `/repos/${client.config.owner}/${client.config.repo}`;
         this.orgPath = `/orgs/${client.config.org}/repos`;
     }
 
     /**
-     * List repositories for the specified organisation
+     * List repositories for the configured organisation
      * 
-     * @returns Data of repository
+     * @returns Array of repositories
      * 
      * @example
      * ```ts 
-     * const repository = await github.repositories.listOrg();
+     * const repository = await github.repositories.listForOrg();
      * ```
      */
-    public async listOrg(): Promise<Repository> {
+    public async listForOrg(): Promise<Repository[]> {
         assertConfig(this.client, ['org']);
-        const response = await this.client.request<RepositoryDTO>(this.orgPath);
-        return mapRepository(response.data);
+        const response = await this.client.request<RepositoryDTO[]>(this.orgPath);
+        return mapRepositories(response.data);
     }
 
     /**
-     * Create new repository for an organisation
+     * Create new repository for the configured organisation
      * 
      * @param params Configuration for the repository to create
      * @returns Data of created repository
      * 
      * @example
      * ```ts
-     * await github.repositories.createOrg({
+     * await github.repositories.createForOrg({
      *     name: 'new-org-repo',
      *     description: 'this project is very cool'
      * });
      * ```
      */
-    public async createOrg(params: CreateRepositoryParams): Promise<Repository> {
+    public async createForOrg(params: CreateRepositoryParams): Promise<Repository> {
         assertConfig(this.client, ['org']);
         const body = mapCreateRepositoryParams(params);
         const response =  await this.client.request<RepositoryDTO>(this.orgPath, {
@@ -91,7 +91,7 @@ export class RepositoryService {
     public async update(params: UpdateRepositoryParams): Promise<Repository> {
         assertConfig(this.client, ['owner', 'repo']);
         const body = mapUpdateRepositoryParams(params);
-        const response = await this.client.request<RepositoryDTO>(`${this.path}/${params.pullNumber}`, {
+        const response = await this.client.request<RepositoryDTO>(this.path, {
             method: 'PATCH',
             body: JSON.stringify(body)
         });

@@ -105,7 +105,6 @@ export interface CreateRepositoryPayload {
 }
 
 export interface UpdateRepositoryParams extends Omit<CreateRepositoryParams, 'teamId'> {
-    pullNumber: number;
     defaultBranch?: string;
     archived?: boolean;
     allowForking?: boolean;
