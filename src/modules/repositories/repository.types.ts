@@ -77,7 +77,6 @@ export interface RepositoryLanguages {
     [language: string]: number;
 }
 
-
 export interface RepositoryTagCommit {
     sha: string;
     url: string;
@@ -136,6 +135,10 @@ export interface Team {
     organizationId?: number;
     enterpriseId?: number;
     parent: TeamParent | null;
+}
+
+export interface RepositoryTopicsResponse{
+    names: string[]
 }
 
 export interface CreateRepositoryParams {
