@@ -77,7 +77,6 @@ export interface RepositoryLanguages {
     [language: string]: number;
 }
 
-
 export interface RepositoryTagCommit {
     sha: string;
     url: string;
@@ -136,6 +135,10 @@ export interface Team {
     organizationId?: number;
     enterpriseId?: number;
     parent: TeamParent | null;
+}
+
+export interface RepositoryTopicsResponse{
+    names: string[]
 }
 
 export interface CreateRepositoryParams {
@@ -200,4 +203,36 @@ export interface UpdateRepositoryPayload extends Omit<CreateRepositoryPayload, '
     default_branch?: string;
     archived?: boolean;
     allow_forking?: boolean;
+}
+
+export interface TransferRepositoryParams {
+    newOwner: string;
+    newName?: string;
+    teamsIds?: number[];
+}
+
+export interface TransferRepositoryPayload {
+    new_owner: string;
+    new_name?: string;
+    team_ids?: number[];
+}
+
+export interface CreateRepositoryFromTemplateParams {
+    templateOwner: string;
+    templateRepo: string;
+    owner?: string;
+    options: {
+        name: string;
+        description?: string;
+        includeAllBranches?: boolean;
+        private?: boolean;
+    }
+}
+
+export interface CreateRepositoryFromTemplatePayload {
+    name: string
+    owner?: string; 
+    description?: string;
+    include_all_branches?: boolean;
+    private?: boolean;
 }
